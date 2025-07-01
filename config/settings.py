@@ -4,7 +4,6 @@ from pathlib import Path
 from dotenv import load_dotenv
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-# 👇 Загружаем переменные из файла env.prod, а не просто ".env"
 load_dotenv(BASE_DIR / "env.prod", override=True)
 
 SECRET_KEY = os.getenv("SECRET_KEY")

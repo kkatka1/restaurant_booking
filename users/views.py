@@ -34,11 +34,9 @@ class UserCreateView(CreateView):
         user.token = token
         user.save()
 
-        # Добавим в группу (если нужно)
         regular_user_group, _ = Group.objects.get_or_create(name="regular_user")
         user.groups.add(regular_user_group)
 
-        # Отправка подтверждения по email
         host = self.request.get_host()
         confirm_url = f"http://{host}/users/email-confirm/{token}"
         send_email_confirm(user.email, confirm_url)

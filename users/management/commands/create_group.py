@@ -7,7 +7,7 @@ class Command(BaseCommand):
 
     def handle(self, *args, **kwargs):
         groups_permissions = {
-            "admin": [],  # superuser имеет все права, эту группу можно использовать формально
+            "admin": [],
             "administrator": [  # Полный доступ к Reservation
                 "booking.add_reservation",
                 "booking.change_reservation",
@@ -27,8 +27,7 @@ class Command(BaseCommand):
                 "booking.view_promotion",
                 # Просмотр бронирований
                 "booking.view_reservation",
-                # Доступ к статистике (виртуально, как заглушка)
-                # можно будет реализовать через custom permission в будущем
+
             ],
             "marketer": [
                 # Только управление акциями

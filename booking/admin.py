@@ -49,7 +49,7 @@ class CustomReservationForm(forms.ModelForm):
         model = Reservation
         fields = "__all__"
         widgets = {
-            "time_start": widgets.AdminSplitDateTime(),  # Удобный виджет даты/времени
+            "time_start": widgets.AdminSplitDateTime(),
         }
 
     def clean(self):
@@ -58,13 +58,12 @@ class CustomReservationForm(forms.ModelForm):
         table = cleaned_data.get("table")
 
         if not time_start or not table:
-            return cleaned_data  # Если чего-то нет — пропускаем остальное
+            return cleaned_data
 
-        # 1. Нельзя забронировать в прошлом
         if time_start < timezone.now():
             self.add_error("time_start", "Нельзя бронировать на прошедшее время.")
 
-        # 2. Проверка на пересечение с существующими бронями (±3 часа)
+        # Проверка на пересечение с существующими бронями (±3 часа)
         overlapping = Reservation.objects.filter(
             table=table,
             time_start__lte=time_start,
@@ -83,7 +82,7 @@ class CustomReservationForm(forms.ModelForm):
 
 @admin.register(Reservation)
 class ReservationAdmin(admin.ModelAdmin):
-    form = CustomReservationForm  # <--- Вот главное! Используем кастомную форму
+    form = CustomReservationForm
 
     list_display = (
         "table",

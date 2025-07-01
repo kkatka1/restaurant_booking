@@ -1,4 +1,3 @@
-# users/management/commands/csu.py
 from django.contrib.auth import get_user_model
 from django.core.management import BaseCommand
 
@@ -17,8 +16,8 @@ class Command(BaseCommand):
         user.first_name = "Admin"
         user.last_name = "Superuser"
         user.is_active = True
-        user.is_staff = True  # 👈 обязательно!
-        user.is_superuser = True  # 👈 обязательно!
+        user.is_staff = True
+        user.is_superuser = True
         user.set_password(password)
         user.save()
 
