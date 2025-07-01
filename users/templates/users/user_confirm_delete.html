@@ -1,0 +1,101 @@
+{% extends 'booking/base.html' %}
+{% load static %}
+
+{% block title %}Удаление профиля{% endblock %}
+
+{% block main_container %}
+<style>
+  html, body {
+    margin: 0; padding: 0; overflow-x: hidden;
+  }
+  .feedback-fullscreen {
+    height: 100vh;
+    width: 100vw;
+    background: url('{% static "images/rest.empty.png" %}') no-repeat center center/cover;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 2rem;
+    box-sizing: border-box;
+  }
+  .feedback-form-container {
+    background-color: #dee2e6;
+    padding: 2rem;
+    border-radius: 12px;
+    box-shadow: 0 0 10px rgba(0,0,0,0.3);
+    width: 100%;
+    max-width: 500px;
+  }
+  .feedback-form-container h2 {
+    text-align: center;
+    margin-bottom: 1.5rem;
+    color: #dc3545;
+  }
+  .warning-text {
+    margin-bottom: 1.5rem;
+    text-align: center;
+    line-height: 1.6;
+  }
+  .warning-text strong {
+    color: #dc3545;
+  }
+  .btn-container {
+    display: flex;
+    gap: 1rem;
+    margin-top: 1.5rem;
+  }
+  .btn-delete {
+    background-color: #dc3545;
+    color: white;
+    padding: 0.75rem;
+    font-size: 1.1rem;
+    font-weight: bold;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    border: none;
+    flex: 1;
+    text-align: center;
+  }
+  .btn-cancel {
+    background-color: #6c757d;
+    color: white;
+    padding: 0.75rem;
+    font-size: 1.1rem;
+    font-weight: bold;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    border: none;
+    flex: 1;
+    text-align: center;
+    text-decoration: none;
+  }
+  .btn-delete:hover {
+    background-color: #bb2d3b;
+  }
+  .btn-cancel:hover {
+    background-color: #5c636a;
+  }
+</style>
+
+<div class="feedback-fullscreen">
+  <div class="feedback-form-container">
+    <h2>Удаление профиля</h2>
+
+    <div class="warning-text">
+      <p>Вы действительно хотите удалить свой профиль с email <strong>{{ user.email }}</strong>?</p>
+      <p>После удаления аккаунта все связанные данные будут удалены без возможности восстановления.</p>
+    </div>
+
+    <form method="post">
+      {% csrf_token %}
+      <div class="btn-container">
+        <button type="submit" class="btn-delete">Удалить навсегда</button>
+        <a href="{% url 'users:profile' user.pk %}" class="btn-cancel">Отмена</a>
+      </div>
+    </form>
+  </div>
+</div>
+{% endblock %}

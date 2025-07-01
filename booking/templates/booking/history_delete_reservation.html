@@ -1,0 +1,72 @@
+{% extends 'booking/base.html' %}
+{% load static %}
+
+{% block title %}Удаление брони{% endblock %}
+
+{% block main_container %}
+<div style="
+    height: 100vh;
+    width: 100vw;
+    background: url('{% static 'images/rest.empty.png' %}') center/cover no-repeat;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 2rem;
+">
+  <div style="
+      background: #dee2e6;
+      padding: 2rem;
+      border-radius: 12px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.3);
+      max-width: 500px;
+      width: 100%;
+  ">
+    <h2 style="text-align: center; color: #dc3545; margin-bottom: 1.5rem;">
+      Удаление бронирования
+    </h2>
+
+    <div style="
+        background: white;
+        padding: 1.5rem;
+        border-radius: 8px;
+        margin-bottom: 1.5rem;
+    ">
+      <p><strong>Дата:</strong> {{ object.time_start|date:"d.m.Y H:i" }}</p>
+      <p><strong>Столик:</strong> №{{ object.table.number }}</p>
+      <p><strong>Гостей:</strong> {{ object.guests_count }}</p>
+    </div>
+
+    <p style="text-align: center; margin-bottom: 1.5rem;">
+      Вы уверены, что хотите удалить это бронирование?
+    </p>
+
+    <form method="post" style="margin-top: 1.5rem;">
+      {% csrf_token %}
+      <div style="display: flex; gap: 1rem;">
+        <button type="submit" style="
+            background: #dc3545;
+            color: white;
+            padding: 0.75rem;
+            border: none;
+            border-radius: 8px;
+            flex: 1;
+            cursor: pointer;
+        ">
+          Удалить
+        </button>
+        <a href="{% url 'booking:history' %}" style="
+            background: #6c757d;
+            color: white;
+            padding: 0.75rem;
+            text-align: center;
+            border-radius: 8px;
+            flex: 1;
+            text-decoration: none;
+        ">
+          Отмена
+        </a>
+      </div>
+    </form>
+  </div>
+</div>
+{% endblock %}

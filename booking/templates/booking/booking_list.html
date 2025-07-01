@@ -1,0 +1,97 @@
+{% extends 'booking/base.html' %}
+
+{% block title %}Выбор времени и столика{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+  {% if not user.is_authenticated %}
+  <div class="alert alert-warning text-center">
+    Для самостоятельного бронирования вам необходимо <a href="{% url 'users:login' %}?next={{ request.path }}" class="alert-link">войти</a> или <a href="{% url 'users:register' %}" class="alert-link">зарегистрироваться</a>
+  </div>
+  {% endif %}
+  <!-- Центрированная форма выбора времени -->
+  <form method="get" class="mb-4 text-center">
+    <label for="booking_time" class="form-label" style="font-size: 1.3rem; font-weight: 600;">
+      Выберите время бронирования:
+    </label>
+    <br>
+    <input type="datetime-local"
+           id="booking_time"
+           name="booking_time"
+           class="form-control d-inline-block text-center"
+           style="width: 300px; font-size: 1.1rem;"
+           required
+           value="{{ request.GET.booking_time }}">
+    <br>
+    <button type="submit"
+            class="btn"
+            style="margin-top: 15px; font-size: 1.2rem; padding: 10px 30px; background-color: #ff7f50; color: white;">
+      Показать доступные столы
+    </button>
+  </form>
+
+  {% if tables %}
+    <!-- Инструкция -->
+    <div class="p-3 rounded mb-4" style="background-color: #fff0e5; border: 1px solid #ffcba4;">
+      <strong>Схема зала:</strong> выберите столик ниже.<br>
+      <span class="text-danger">Красный</span> — занят.<br>
+      <span class="text-success">Зелёный</span> — свободен.<br>
+      ⚠️ — скоро будет занят.
+    </div>
+
+    <!-- Схема зала -->
+    <div class="row">
+      <!-- Слева -->
+      <div class="col-md-4 text-center border-end">
+        <h5>Слева</h5>
+        {% for t in left_tables %}
+          <button class="btn mb-2"
+                  style="width: 80px; height: 80px; background-color: {{ t.color }};"
+                  {% if t.color == 'green' %}
+                    onclick="location.href='{% url 'booking:create' t.table.pk %}?booking_time={{ request.GET.booking_time }}'"
+                  {% else %}disabled{% endif %}>
+            {{ t.table.display_name|default:t.table.number }}
+          </button><br>
+          {% if t.warning %}
+            <div class="text-warning small mb-3">{{ t.warning }}</div>
+          {% endif %}
+        {% endfor %}
+      </div>
+
+      <!-- Центр -->
+      <div class="col-md-4 text-center border-end">
+        <h5>Центр</h5>
+        {% for t in mid_tables %}
+          <button class="btn mb-2"
+                  style="width: 80px; height: 80px; background-color: {{ t.color }};"
+                  {% if t.color == 'green' %}
+                    onclick="location.href='{% url 'booking:create' t.table.pk %}?booking_time={{ request.GET.booking_time }}'"
+                  {% else %}disabled{% endif %}>
+            {{ t.table.display_name|default:t.table.number }}
+          </button><br>
+          {% if t.warning %}
+            <div class="text-warning small mb-3">{{ t.warning }}</div>
+          {% endif %}
+        {% endfor %}
+      </div>
+
+      <!-- Справа -->
+      <div class="col-md-4 text-center">
+        <h5>Справа</h5>
+        {% for t in right_tables %}
+          <button class="btn mb-2"
+                  style="width: 80px; height: 80px; background-color: {{ t.color }};"
+                  {% if t.color == 'green' %}
+                    onclick="location.href='{% url 'booking:create' t.table.pk %}?booking_time={{ request.GET.booking_time }}'"
+                  {% else %}disabled{% endif %}>
+            {{ t.table.display_name|default:t.table.number }}
+          </button><br>
+          {% if t.warning %}
+            <div class="text-warning small mb-3">{{ t.warning }}</div>
+          {% endif %}
+        {% endfor %}
+      </div>
+    </div>
+  {% endif %}
+</div>
+{% endblock %}

@@ -1,0 +1,128 @@
+{% extends 'booking/base.html' %}
+{% block title %}Список пользователей{% endblock %}
+
+{% block main_container %}
+<style>
+  .user-card {
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    padding: 1rem;
+    margin-bottom: 1rem;
+    background-color: #fff;
+  }
+
+  .user-title {
+    font-size: 1.2rem;
+    font-weight: bold;
+    color: #007bff;
+    margin-bottom: 0.5rem;
+  }
+
+  .user-info {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    font-size: 0.95rem;
+  }
+
+  .user-info li {
+    margin-bottom: 0.3rem;
+  }
+
+  .user-actions {
+    margin-top: 1rem;
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+  }
+
+  .btn-toggle {
+    font-weight: 600;
+    padding: 0.4rem 1rem;
+    border-radius: 6px;
+    font-size: 0.9rem;
+    border: none;
+    cursor: pointer;
+  }
+
+  .btn-toggle.active {
+    background-color: #28a745;
+    color: white;
+  }
+
+  .btn-toggle.inactive {
+    background-color: #6c757d;
+    color: white;
+  }
+
+</style>
+
+<div class="container my-5">
+  <h2 class="text-center mb-4">Зарегистрированные пользователи</h2>
+
+  {% if object_list %}
+    <div class="list-group">
+      {% for user in object_list %}
+        <div class="list-group-item user-card">
+          <div class="user-title">
+            <i class="material-icons left" style="vertical-align: middle;">face</i> {{ user.email }}
+          </div>
+          <ul class="user-info">
+            <li><strong>Имя:</strong> {{ user.first_name|default:"—" }}</li>
+            <li><strong>Фамилия:</strong> {{ user.last_name|default:"—" }}</li>
+            <li><strong>Статус:</strong> {% if user.is_staff %}Администратор{% else %}Пользователь{% endif %}</li>
+          </ul>
+
+          <div class="user-actions">
+            <button data-pk="{{ user.pk }}"
+                    class="btn-toggle {% if user.is_active %}active{% else %}inactive{% endif %} toggle-active-btn">
+              {% if user.is_active %}
+                Активен
+              {% else %}
+                Заблокирован
+              {% endif %}
+            </button>
+          </div>
+        </div>
+      {% endfor %}
+    </div>
+  {% else %}
+    <p class="text-center text-muted">Нет зарегистрированных пользователей.</p>
+  {% endif %}
+</div>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    const buttons = document.querySelectorAll('.toggle-active-btn');
+    buttons.forEach(button => {
+      button.addEventListener('click', function () {
+        const pk = this.getAttribute('data-pk');
+        const isActive = this.classList.contains('active');
+
+        fetch(`/users/toggle/${pk}/`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'X-CSRFToken': '{{ csrf_token }}',
+          },
+          body: JSON.stringify({ 'is_active': !isActive })
+        })
+          .then(response => response.json())
+          .then(data => {
+            if (data.success) {
+              if (isActive) {
+                this.classList.remove('active');
+                this.classList.add('inactive');
+                this.textContent = 'Заблокирован';
+              } else {
+                this.classList.remove('inactive');
+                this.classList.add('active');
+                this.textContent = 'Активен';
+              }
+            }
+          });
+      });
+    });
+  });
+</script>
+{% endblock %}
