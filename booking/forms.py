@@ -12,7 +12,6 @@ class ReservationForm(forms.ModelForm):
 
     def clean_guest_phone(self):
         phone = self.cleaned_data.get("guest_phone")
-        # Удаляем пробелы и лишние символы
         cleaned_phone = "".join(c for c in phone if c.isdigit())
 
         if not cleaned_phone.isdigit():

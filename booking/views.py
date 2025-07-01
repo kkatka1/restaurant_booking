@@ -60,7 +60,6 @@ class BookingListView(LoginRequiredMixin, ListView):
                     color = "red"
                     warning = None
                 else:
-                    # Предупреждение, если бронь начнется в ближайшие 1.5 часа
                     warning = None
                     for reservation in table.reservations.all():
                         if not is_aware(reservation.time_start):
