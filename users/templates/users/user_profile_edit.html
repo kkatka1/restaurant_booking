@@ -1,0 +1,86 @@
+{% extends 'booking/base.html' %}
+{% load static %}
+
+{% block title %}Редактирование профиля{% endblock %}
+
+{% block main_container %}
+<style>
+  html, body {
+    margin: 0; padding: 0; overflow-x: hidden;
+  }
+  .feedback-fullscreen {
+    height: 100vh;
+    width: 100vw;
+    background: url('{% static "images/rest.empty.png" %}') no-repeat center center/cover;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 2rem;
+    box-sizing: border-box;
+  }
+  .feedback-form-container {
+    background-color: #dee2e6;
+    padding: 2rem;
+    border-radius: 12px;
+    box-shadow: 0 0 10px rgba(0,0,0,0.3);
+    width: 100%;
+    max-width: 500px;
+  }
+  .feedback-form-container h2 {
+    text-align: center;
+    margin-bottom: 1.5rem;
+  }
+  label {
+    font-weight: 600;
+  }
+  .form-control, input, textarea {
+    width: 100%;
+    padding: 0.5rem 0.75rem;
+    margin-bottom: 0.75rem;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    box-sizing: border-box;
+  }
+  .text-danger {
+    color: #dc3545;
+    font-size: 0.875rem;
+    margin-bottom: 1rem;
+    display: block;
+  }
+  .btn-orange {
+    background-color: #ff7f50;
+    border-color: #ff7f50;
+    color: white;
+    width: 100%;
+    padding: 0.75rem;
+    font-size: 1.1rem;
+    font-weight: bold;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    border: none;
+  }
+  .btn-orange:hover {
+    background-color: #e96f40;
+    border-color: #e96f40;
+  }
+</style>
+
+<div class="feedback-fullscreen">
+  <div class="feedback-form-container">
+    <h2>Редактирование профиля</h2>
+    <form method="post" novalidate>
+      {% csrf_token %}
+      {% for field in form.visible_fields %}
+        <label for="{{ field.id_for_label }}">{{ field.label }}{% if field.field.required %} *{% endif %}</label>
+        {{ field }}
+        {% if field.errors %}
+          <span class="text-danger">{{ field.errors|striptags }}</span>
+        {% endif %}
+      {% endfor %}
+      <button type="submit" class="btn-orange">Сохранить изменения</button>
+    </form>
+  </div>
+</div>
+{% endblock %}

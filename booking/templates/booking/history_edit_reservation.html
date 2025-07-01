@@ -1,0 +1,116 @@
+{% extends 'booking/base.html' %}
+{% load static %}
+
+{% block title %}Редактирование брони{% endblock %}
+
+{% block main_container %}
+<style>
+  html, body {
+    margin: 0; padding: 0; overflow-x: hidden;
+  }
+  .feedback-fullscreen {
+    height: 100vh;
+    width: 100vw;
+    background: url('{% static "images/rest.empty.png" %}') no-repeat center center/cover;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 2rem;
+    box-sizing: border-box;
+  }
+  .feedback-form-container {
+    background-color: #dee2e6;
+    padding: 2rem;
+    border-radius: 12px;
+    box-shadow: 0 0 10px rgba(0,0,0,0.3);
+    width: 100%;
+    max-width: 500px;
+  }
+  .feedback-form-container h2 {
+    text-align: center;
+    margin-bottom: 1.5rem;
+  }
+  label {
+    font-weight: 600;
+  }
+  .form-control, input, select {
+    width: 100%;
+    padding: 0.5rem 0.75rem;
+    margin-bottom: 0.75rem;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    box-sizing: border-box;
+  }
+  .text-danger {
+    color: #dc3545;
+    font-size: 0.875rem;
+    margin-bottom: 1rem;
+    display: block;
+  }
+  .btn-container {
+    display: flex;
+    gap: 1rem;
+    margin-top: 1.5rem;
+  }
+  .btn-save {
+    background-color: #28a745;
+    color: white;
+    padding: 0.75rem;
+    font-size: 1.1rem;
+    font-weight: bold;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    border: none;
+    flex: 1;
+  }
+  .btn-cancel {
+    background-color: #6c757d;
+    color: white;
+    padding: 0.75rem;
+    font-size: 1.1rem;
+    font-weight: bold;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    border: none;
+    flex: 1;
+    text-align: center;
+    text-decoration: none;
+  }
+  .btn-save:hover {
+    background-color: #218838;
+  }
+  .btn-cancel:hover {
+    background-color: #5c636a;
+  }
+</style>
+
+<div class="feedback-fullscreen">
+  <div class="feedback-form-container">
+    <h2>Редактирование бронирования</h2>
+
+    <form method="post">
+      {% csrf_token %}
+      {% for field in form %}
+        <div class="form-group">
+          <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+          {{ field }}
+          {% if field.help_text %}
+            <small class="form-text text-muted">{{ field.help_text }}</small>
+          {% endif %}
+          {% for error in field.errors %}
+            <div class="text-danger">{{ error }}</div>
+          {% endfor %}
+        </div>
+      {% endfor %}
+
+      <div class="btn-container">
+        <button type="submit" class="btn-save">Сохранить</button>
+        <a href="{% url 'booking:history' %}" class="btn-cancel">Отмена</a>
+      </div>
+    </form>
+  </div>
+</div>
+{% endblock %}

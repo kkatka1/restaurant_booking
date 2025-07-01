@@ -1,0 +1,101 @@
+{% extends 'booking/base.html' %}
+{% load static %}
+
+{% block title %}О нас - Ресторан{% endblock %}
+
+{% block content %}
+<style>
+  html, body {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    overflow-x: hidden;
+  }
+
+  /* Фон на весь экран */
+  .about-background {
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 100vh;
+    width: 100vw;
+    background: url('{% static "images/rest.empty2.png" %}') no-repeat center center/cover;
+    z-index: -1;
+  }
+
+  /* Контейнер с контентом */
+  .about-content {
+    position: relative;
+    max-width: 1200px;
+    margin: 6rem auto 3rem auto; /* опустил вниз, чтобы не прилипало к верху */
+    background: rgba(255, 255, 255, 0.9);
+    border-radius: 12px;
+    padding: 2rem;
+    box-shadow: 0 0 10px rgba(0,0,0,0.3);
+  }
+
+  /* Заголовки */
+  .about-content h2,
+  .about-content h3 {
+    text-align: center;
+    font-weight: bold;
+  }
+
+  .about-content h2 {
+    margin-bottom: 3rem;
+  }
+
+  .about-content h3 {
+    margin-bottom: 1.5rem;
+  }
+
+  /* Параграфы */
+  .about-content p {
+    text-align: center;
+    font-size: 1.25rem;
+    margin-bottom: 2rem;
+  }
+
+  /* Изображения с закруглёнными краями */
+  .about-content img {
+    width: 95%;
+    height: auto;
+    border-radius: 12px;
+    margin-bottom: 2rem;
+  }
+
+  /* Убираем горизонтальные отступы у контейнера для растяжки на весь экран */
+  .container-fluid.px-0 {
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+  }
+</style>
+
+<div class="about-background"></div>
+
+<div class="about-content container-fluid px-0">
+  <h2 class="display-5">О нашем ресторане</h2>
+
+  <div class="row gx-0">
+    <!-- Блок 1: Миссия и ценности -->
+    <div class="col-md-6 d-flex flex-column align-items-center px-3">
+      <h3 class="fs-3">История, миссия и ценности</h3>
+      <p>
+        Наш ресторан родился из любви к итальянской культуре. Мы создаём атмосферу, где каждый гость чувствует себя как дома.
+        Миссия — дарить вкус, эмоции и уют. Ценности — уважение, честность и внимание к деталям.
+      </p>
+      <img src="{% static 'images/rest.about.png' %}" alt="История ресторана" class="img-fluid">
+    </div>
+
+    <!-- Блок 2: Команда -->
+    <div class="col-md-6 d-flex flex-column align-items-center px-3">
+      <h3 class="fs-3">Наша команда</h3>
+      <p>
+        В команде — мастера своего дела: повара, официанты, администраторы. Мы любим то, что делаем, и передаём это в каждой детали.
+        Вместе мы создаём место, куда хочется возвращаться.
+      </p>
+      <img src="{% static 'images/rest.command.png' %}" alt="Команда ресторана" class="img-fluid">
+    </div>
+  </div>
+</div>
+{% endblock %}

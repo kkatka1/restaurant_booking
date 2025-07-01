@@ -1,0 +1,10 @@
+{% extends 'booking/base.html' %}
+{% block title %}Спасибо за бронирование{% endblock %}
+
+{% block content %}
+<div class="text-center mt-5">
+  <h1>Спасибо за бронирование!</h1>
+  <p>Мы уже готовим для вас уютный столик 🍽️</p>
+  <a href="{% url 'booking:home' %}" class="btn btn-primary mt-3">Вернуться на главную</a>
+</div>
+{% endblock %}

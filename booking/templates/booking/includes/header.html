@@ -1,0 +1,94 @@
+<header class="mb-4">
+  <nav class="navbar navbar-expand-lg navbar-light custom-navbar px-4" style="background-color: #f8f9fa;">
+    <div class="container-fluid justify-content-between align-items-center">
+      <a class="navbar-brand mx-auto fancy-title" href="{% url 'booking:home' %}" style="font-weight: bold; font-size: 1.8rem; color: #b35200;">Ресторан</a>
+
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
+              aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+
+      <div class="collapse navbar-collapse justify-content-between" id="navbarNav">
+        <!-- Основное меню -->
+        <ul class="navbar-nav text-center" style="font-weight: 600; font-size: 1.1rem;">
+          <li class="nav-item mx-2">
+            <a class="nav-link booking-link {% if request.resolver_match.url_name == 'list' %}active-link{% endif %}" href="{% url 'booking:list' %}">Бронирование</a>
+          </li>
+          <li class="nav-item mx-2">
+            <a class="nav-link custom-link {% if request.resolver_match.url_name == 'home' %}active-link{% endif %}" href="{% url 'booking:home' %}">Главная</a>
+          </li>
+          <li class="nav-item mx-2">
+            <a class="nav-link custom-link {% if request.resolver_match.url_name == 'about' %}active-link{% endif %}" href="{% url 'booking:about' %}">О нас</a>
+          </li>
+          <li class="nav-item mx-2">
+            <a class="nav-link custom-link {% if request.resolver_match.url_name == 'menu' %}active-link{% endif %}" href="{% url 'booking:menu' %}">Меню</a>
+          </li>
+          <li class="nav-item mx-2">
+            <a class="nav-link custom-link {% if request.resolver_match.url_name == 'contacts' %}active-link{% endif %}" href="{% url 'booking:contacts' %}">Контакты</a>
+          </li>
+          <li class="nav-item mx-2">
+            <a class="nav-link custom-link {% if request.resolver_match.url_name == 'feedback' %}active-link{% endif %}" href="{% url 'booking:feedback' %}">Обратная связь</a>
+          </li>
+        </ul>
+
+        <!-- Авторизация -->
+        <ul class="navbar-nav ms-auto text-center align-items-center" style="font-weight: 600; font-size: 1.1rem;">
+          {% if request.user.is_authenticated %}
+            <li class="nav-item mx-2">
+              <a class="nav-link custom-link" href="{% url 'users:profile' request.user.pk %}">Профиль</a>
+            </li>
+            <li class="nav-item mx-2 d-flex align-items-center">
+              <form action="{% url 'users:logout' %}" method="post" style="margin: 0;">
+                {% csrf_token %}
+                <button type="submit"
+                        class="nav-link custom-link"
+                        style="background: none; border: none; padding: 0; font-weight: 600; cursor: pointer;">
+                  Выйти
+                </button>
+              </form>
+            </li>
+          {% else %}
+            <li class="nav-item mx-2">
+              <a class="nav-link custom-link {% if request.resolver_match.url_name == 'login' %}active-link{% endif %}" href="{% url 'users:login' %}">Войти</a>
+            </li>
+            <li class="nav-item mx-2">
+              <a class="nav-link custom-link {% if request.resolver_match.url_name == 'register' %}active-link{% endif %}" href="{% url 'users:register' %}">Регистрация</a>
+            </li>
+          {% endif %}
+        </ul>
+      </div>
+    </div>
+  </nav>
+</header>
+
+<style>
+  .custom-link {
+    color: #b35200 !important;
+    transition: color 0.3s ease;
+  }
+  .custom-link:hover {
+    color: #ff7f50 !important;
+    text-decoration: underline;
+  }
+  .active-link {
+    color: #ff7f50 !important;
+    font-weight: 700;
+    text-decoration: underline;
+  }
+
+  /* Выделенная кнопка бронирования */
+  .booking-link {
+    background-color: #ff7f50;
+    color: white !important;
+    padding: 0.4rem 1rem;
+    border-radius: 0.3rem;
+    font-weight: 700;
+    transition: background-color 0.3s ease, color 0.3s ease;
+  }
+  .booking-link:hover,
+  .booking-link.active-link {
+    background-color: #b35200;
+    color: white !important;
+    text-decoration: none;
+  }
+</style>

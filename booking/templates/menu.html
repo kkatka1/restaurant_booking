@@ -1,0 +1,88 @@
+{% extends 'booking/base.html' %}
+{% load static %}
+
+{% block title %}Меню{% endblock %}
+
+{% block content %}
+<style>
+  html, body {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    overflow-x: hidden;
+  }
+
+  /* Фон растянут на весь экран, как в feedback */
+  .menu-background {
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 100vh;
+    width: 100vw;
+    background: url('{% static "images/rest.empty2.png" %}') no-repeat center center/cover;
+    z-index: -1; /* Чтобы фон был под контентом */
+  }
+
+  /* Контейнер с меню */
+  .menu-content {
+    position: relative;
+    max-width: 1200px;
+    margin: 6rem auto 2rem auto; /* Отступ сверху 6rem — опустили ниже */
+    background: rgba(255, 255, 255, 0.9);
+    border-radius: 12px;
+    padding: 2rem;
+    box-shadow: 0 0 10px rgba(0,0,0,0.3);
+  }
+
+  /* Заголовок меню */
+  .menu-content h2 {
+    text-align: center;
+    margin-bottom: 2rem;
+    font-weight: bold;
+  }
+</style>
+
+<div class="menu-background"></div>
+
+<div class="menu-content container">
+  <h2>Наше меню</h2>
+  <div class="row row-cols-1 row-cols-md-2 g-4">
+    <div class="col">
+      <div class="card h-100">
+        <img src="{% static 'images/rest.menu.png' %}" class="card-img-top" alt="Блюдо 1">
+        <div class="card-body">
+          <h5 class="card-title">стейк лосося</h5>
+          <p class="card-text">Нежный лосось в сливочном соусе.</p>
+        </div>
+      </div>
+    </div>
+    <div class="col">
+      <div class="card h-100">
+        <img src="{% static 'images/rest.menu_2.png' %}" class="card-img-top" alt="Блюдо 2">
+        <div class="card-body">
+          <h5 class="card-title">Спагетти по итальянски</h5>
+          <p class="card-text">Итальянское блюдо из спагетти и карбонары.</p>
+        </div>
+      </div>
+    </div>
+    <div class="col">
+      <div class="card h-100">
+        <img src="{% static 'images/rest.menu_drink.png' %}" class="card-img-top" alt="Блюдо 3">
+        <div class="card-body">
+          <h5 class="card-title">Напитки</h5>
+          <p class="card-text">Широкий ассортимент напитков.</p>
+        </div>
+      </div>
+    </div>
+    <div class="col">
+      <div class="card h-100">
+        <img src="{% static 'images/rest.menu_drinks2.png' %}" class="card-img-top" alt="Блюдо 4">
+        <div class="card-body">
+          <h5 class="card-title">Мохито с лаймом</h5>
+          <p class="card-text">Освежающий мохито с кусочками лайма.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
