@@ -27,7 +27,6 @@ class Command(BaseCommand):
                 "booking.view_promotion",
                 # Просмотр бронирований
                 "booking.view_reservation",
-
             ],
             "marketer": [
                 # Только управление акциями

@@ -1,91 +1,133 @@
 {% extends 'booking/base.html' %}
+{% load static %}
+
 {% block title %}Список пользователей{% endblock %}
 
 {% block main_container %}
 <style>
-  .user-card {
-    border: 1px solid #e0e0e0;
-    border-radius: 8px;
+  .user-list-container {
+    max-width: 800px;
+    margin: 2rem auto;
     padding: 1rem;
-    margin-bottom: 1rem;
-    background-color: #fff;
   }
 
-  .user-title {
-    font-size: 1.2rem;
-    font-weight: bold;
-    color: #007bff;
-    margin-bottom: 0.5rem;
+  .user-entry {
+    border-bottom: 1px solid #dee2e6;
+    padding: 1rem 0;
   }
 
-  .user-info {
-    margin: 0;
-    padding: 0;
-    list-style: none;
-    font-size: 0.95rem;
+  .user-entry:last-child {
+    border-bottom: none;
   }
 
-  .user-info li {
-    margin-bottom: 0.3rem;
+  .user-info-item {
+    display: flex;
+    margin-bottom: 0.6rem;
+    align-items: center;
+  }
+
+  .user-info-label {
+    font-weight: 600;
+    min-width: 180px;
+    color: #495057;
+  }
+
+  .user-info-value {
+    flex-grow: 1;
+    color: #212529;
+  }
+
+  .booking-count {
+    display: inline-block;
+    background-color: #ff7f50;
+    color: white;
+    border-radius: 50%;
+    width: 24px;
+    height: 24px;
+    text-align: center;
+    line-height: 24px;
+    font-size: 0.8rem;
+    margin-left: 5px;
   }
 
   .user-actions {
     margin-top: 1rem;
-    display: flex;
-    gap: 10px;
-    flex-wrap: wrap;
   }
 
   .btn-toggle {
-    font-weight: 600;
-    padding: 0.4rem 1rem;
-    border-radius: 6px;
+    background-color: #6c757d;
+    color: white;
+    padding: 0.5rem 1.2rem;
     font-size: 0.9rem;
+    font-weight: 600;
+    border-radius: 6px;
     border: none;
     cursor: pointer;
+    transition: all 0.3s ease;
   }
 
   .btn-toggle.active {
     background-color: #28a745;
-    color: white;
   }
 
   .btn-toggle.inactive {
-    background-color: #6c757d;
-    color: white;
+    background-color: #dc3545;
   }
 
+  .btn-toggle:hover {
+    opacity: 0.9;
+  }
 </style>
 
-<div class="container my-5">
-  <h2 class="text-center mb-4">Зарегистрированные пользователи</h2>
+<div class="user-list-container">
+  <h2 class="text-center mb-4">Список зарегистрированных пользователей</h2>
 
   {% if object_list %}
-    <div class="list-group">
-      {% for user in object_list %}
-        <div class="list-group-item user-card">
-          <div class="user-title">
-            <i class="material-icons left" style="vertical-align: middle;">face</i> {{ user.email }}
-          </div>
-          <ul class="user-info">
-            <li><strong>Имя:</strong> {{ user.first_name|default:"—" }}</li>
-            <li><strong>Фамилия:</strong> {{ user.last_name|default:"—" }}</li>
-            <li><strong>Статус:</strong> {% if user.is_staff %}Администратор{% else %}Пользователь{% endif %}</li>
-          </ul>
-
-          <div class="user-actions">
-            <button data-pk="{{ user.pk }}"
-                    class="btn-toggle {% if user.is_active %}active{% else %}inactive{% endif %} toggle-active-btn">
-              {% if user.is_active %}
-                Активен
-              {% else %}
-                Заблокирован
-              {% endif %}
-            </button>
-          </div>
+    {% for user in object_list %}
+      <div class="user-entry">
+        <div class="user-info-item">
+          <span class="user-info-label">Имя:</span>
+          <span class="user-info-value">{{ user.first_name|default:"—" }}</span>
         </div>
-      {% endfor %}
-    </div>
+
+        <div class="user-info-item">
+          <span class="user-info-label">Фамилия:</span>
+          <span class="user-info-value">{{ user.last_name|default:"—" }}</span>
+        </div>
+
+        <div class="user-info-item">
+          <span class="user-info-label">Email:</span>
+          <span class="user-info-value">{{ user.email }}</span>
+        </div>
+
+        <div class="user-info-item">
+          <span class="user-info-label">Дата регистрации:</span>
+          <span class="user-info-value">{{ user.date_joined|date:"d.m.Y H:i" }}</span>
+        </div>
+
+        <div class="user-info-item">
+          <span class="user-info-label">Бронирований:</span>
+          <span class="user-info-value">
+            {{ user.bookings_count }}
+            <span class="booking-count">{{ user.bookings_count }}</span>
+          </span>
+        </div>
+
+        <div class="user-info-item">
+          <span class="user-info-label">Статус:</span>
+          <span class="user-info-value">
+            {% if user.is_staff %}Администратор{% else %}Пользователь{% endif %}
+          </span>
+        </div>
+
+        <div class="user-actions">
+          <button data-pk="{{ user.pk }}"
+                  class="btn-toggle {% if user.is_active %}active{% else %}inactive{% endif %} toggle-active-btn">
+            {% if user.is_active %}Активен{% else %}Заблокирован{% endif %}
+          </button>
+        </div>
+      </div>
+    {% endfor %}
   {% else %}
     <p class="text-center text-muted">Нет зарегистрированных пользователей.</p>
   {% endif %}

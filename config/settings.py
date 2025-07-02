@@ -2,9 +2,20 @@ import os
 from pathlib import Path
 
 from dotenv import load_dotenv
+
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-load_dotenv(BASE_DIR / "env.prod", override=True)
+if os.environ.get("RUNNING_IN_DOCKER") == "1":
+    pass
+else:
+    if os.environ.get("DJANGO_ENV") == "production":
+        from dotenv import load_dotenv
+        load_dotenv(BASE_DIR / ".env.prod", override=True)
+    else:
+        from dotenv import load_dotenv
+        load_dotenv(BASE_DIR / ".env", override=True)
+
+
 
 SECRET_KEY = os.getenv("SECRET_KEY")
 
