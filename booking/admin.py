@@ -52,6 +52,14 @@ class CustomReservationForm(forms.ModelForm):
             "time_start": widgets.AdminSplitDateTime(),
         }
 
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+        # Только активные акции, отсортированные по дате
+        self.fields["upsell_option"].queryset = Promotion.objects.filter(
+            is_active=True
+        ).order_by("-start_date")
+
     def clean(self):
         cleaned_data = super().clean()
         time_start = cleaned_data.get("time_start")

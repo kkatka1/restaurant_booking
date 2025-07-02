@@ -1,11 +1,9 @@
-import secrets
-
 from django.conf import settings
 from django.contrib import messages
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.contrib.auth.models import Group
 from django.contrib.auth.views import LoginView
 from django.core.mail import send_mail
+from django.db.models import Count
 from django.http import Http404
 from django.shortcuts import get_object_or_404, redirect
 from django.urls import reverse, reverse_lazy
@@ -14,6 +12,7 @@ from django.views.generic import (CreateView, DeleteView, DetailView, ListView,
 
 from users.forms import UserAuthenticationForm, UserCreateForm, UserProfileForm
 from users.models import User
+from users.use_cases import create_user_and_send_confirmation
 
 
 class UserLoginView(LoginView):
@@ -28,19 +27,7 @@ class UserCreateView(CreateView):
     success_url = reverse_lazy("users:login")
 
     def form_valid(self, form):
-        user = form.save(commit=False)
-        user.is_active = False
-        token = secrets.token_hex(16)
-        user.token = token
-        user.save()
-
-        regular_user_group, _ = Group.objects.get_or_create(name="regular_user")
-        user.groups.add(regular_user_group)
-
-        host = self.request.get_host()
-        confirm_url = f"http://{host}/users/email-confirm/{token}"
-        send_email_confirm(user.email, confirm_url)
-
+        create_user_and_send_confirmation(form, self.request, User, send_email_confirm)
         messages.success(
             self.request, "Ссылка для подтверждения email отправлена на вашу почту."
         )
@@ -112,4 +99,8 @@ class UserListView(ListView):
     paginate_by = 10
 
     def get_queryset(self):
-        return User.objects.exclude(is_superuser=True).order_by("-date_joined")
+        return (
+            User.objects.annotate(bookings_count=Count("guest_reservations"))
+            .exclude(is_superuser=True)
+            .order_by("-date_joined")
+        )

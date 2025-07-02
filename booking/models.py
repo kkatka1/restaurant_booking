@@ -72,6 +72,27 @@ class Table(models.Model):
         return "available", None
 
 
+class Promotion(models.Model):
+    title = models.CharField(verbose_name="Название акции", max_length=100)
+    description = models.TextField(verbose_name="Описание")
+    discount_percent = models.PositiveIntegerField(verbose_name="Скидка (%)")
+    start_date = models.DateField(verbose_name="Дата начала")
+    end_date = models.DateField(verbose_name="Дата окончания")
+    is_active = models.BooleanField(verbose_name="Активна?", default=True)
+
+    class Meta:
+        verbose_name = "Акция"
+        verbose_name_plural = "Акции"
+        ordering = ["-start_date", "title"]
+
+    def __str__(self):
+        return f"{self.title} ({self.discount_percent}%)"
+
+    def is_current(self):
+        today = timezone.now().date()
+        return self.is_active and self.start_date <= today <= self.end_date
+
+
 class Reservation(models.Model):
     table = models.ForeignKey(
         Table,
@@ -125,12 +146,13 @@ class Reservation(models.Model):
         default=0,
         help_text=" Сумма в рублях за доп продажу",
     )
-    upsell_option = models.CharField(
-        verbose_name="Апсейл-опция",
-        max_length=100,
-        blank=True,
+    upsell_option = models.ForeignKey(
+        Promotion,
+        verbose_name="Апсейл-опция (Акция)",
+        on_delete=models.SET_NULL,
         null=True,
-        help_text="Тип допродажи: десерт, зона, декор и т.п.",
+        blank=True,
+        help_text="Выберите дополнительную опцию из списка активных акций",
     )
     created_at = models.DateTimeField(verbose_name="Создано", auto_now_add=True)
 
@@ -156,24 +178,3 @@ class Reservation(models.Model):
 
     def save(self, *args, **kwargs):
         super().save(*args, **kwargs)
-
-
-class Promotion(models.Model):
-    title = models.CharField(verbose_name="Название акции", max_length=100)
-    description = models.TextField(verbose_name="Описание")
-    discount_percent = models.PositiveIntegerField(verbose_name="Скидка (%)")
-    start_date = models.DateField(verbose_name="Дата начала")
-    end_date = models.DateField(verbose_name="Дата окончания")
-    is_active = models.BooleanField(verbose_name="Активна?", default=True)
-
-    class Meta:
-        verbose_name = "Акция"
-        verbose_name_plural = "Акции"
-        ordering = ["-start_date", "title"]
-
-    def __str__(self):
-        return f"{self.title} ({self.discount_percent}%)"
-
-    def is_current(self):
-        today = timezone.now().date()
-        return self.is_active and self.start_date <= today <= self.end_date

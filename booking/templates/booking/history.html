@@ -1,87 +1,187 @@
 {% extends 'booking/base.html' %}
+{% load static %}
+
 {% block title %}История бронирований{% endblock %}
 
 {% block main_container %}
 <style>
+  html, body {
+    margin: 0;
+    padding: 0;
+    overflow-x: hidden;
+  }
+
+  .history-fullscreen {
+    min-height: 100vh;
+    width: 100vw;
+    background: url('{% static "images/rest.empty.png" %}') no-repeat center center/cover;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 2rem;
+    box-sizing: border-box;
+  }
+
+  .history-container {
+    background-color: white;
+    padding: 2rem;
+    border-radius: 12px;
+    box-shadow: 0 0 15px rgba(0,0,0,0.4);
+    width: 100%;
+    max-width: 800px;
+    box-sizing: border-box;
+    overflow-y: auto;
+    max-height: calc(100vh - 4rem);
+  }
+
+  .reservation-block {
+    background-color: #f8f9fa;
+    padding: 1.5rem;
+    border-radius: 10px;
+    margin-bottom: 1.5rem;
+    box-shadow: 0 0 8px rgba(0,0,0,0.1);
+  }
+
+  .reservation-title {
+    text-align: center;
+    font-size: 1.2rem;
+    font-weight: 700;
+    color: #ff7f50;
+    margin-bottom: 1rem;
+    border-bottom: 2px solid #ff7f50;
+    padding-bottom: 0.5rem;
+  }
+
+  .reservation-info {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+    font-size: 1rem;
+  }
+
+  .reservation-info-item {
+    flex: 1 1 45%;
+  }
+
+  .reservation-info-item strong {
+    color: #495057;
+  }
+
   .reservation-actions {
-    margin-top: 1rem;
+    margin-top: 1.2rem;
     display: flex;
     gap: 10px;
+    justify-content: center;
     flex-wrap: wrap;
   }
 
-  .btn-edit {
-    background-color: #ffc107;
-    color: black;
-    font-weight: 600;
-    padding: 0.4rem 1rem;
-    border-radius: 6px;
-    font-size: 0.9rem;
-    text-decoration: none;
-    border: none;
-  }
-
-  .btn-edit:hover {
-    background-color: #e0a800;
+  .btn-orange {
+    background-color: #ff7f50;
     color: white;
+    padding: 0.5rem 1rem;
+    font-size: 0.9rem;
+    font-weight: 600;
+    border-radius: 8px;
+    border: none;
+    text-decoration: none;
+    transition: all 0.3s ease;
+    text-align: center;
   }
 
-  .btn-delete {
+  .btn-orange:hover {
+    background-color: #e96f40;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+  }
+
+  .btn-red {
     background-color: #dc3545;
     color: white;
-    font-weight: 600;
-    padding: 0.4rem 1rem;
-    border-radius: 6px;
+    padding: 0.5rem 1rem;
     font-size: 0.9rem;
+    font-weight: 600;
+    border-radius: 8px;
     border: none;
+    transition: all 0.3s ease;
   }
 
-  .btn-delete:hover {
-    background-color: #bd2130;
+  .btn-red:hover {
+    background-color: #bb2d3b;
+    transform: translateY(-1px);
+  }
+
+  .empty-message {
+    text-align: center;
+    font-size: 1.2rem;
+    color: #6c757d;
+    margin-top: 2rem;
   }
 </style>
 
-<div class="container my-5">
-  <h2 class="text-center mb-4">История ваших бронирований</h2>
+<div class="history-fullscreen">
+  <div class="history-container">
+    <h2 class="text-center mb-4">История ваших бронирований</h2>
 
-  {% if reservations %}
-    <div class="list-group">
+    {% if reservations %}
       {% for reservation in reservations %}
-        <div class="list-group-item">
-          <h5 class="mb-2 text-primary">
+        <div class="reservation-block">
+          <div class="reservation-title">
             Бронь от {{ reservation.time_start|date:"d.m.Y H:i" }}
-          </h5>
-          <ul class="mb-0">
-            <li><strong>Столик:</strong>
-              {{ reservation.table.display_name|default:"№ " }}{{ reservation.table.number }}
-            </li>
-            <li><strong>Гостей:</strong> {{ reservation.guests_count }}</li>
-            <li><strong>Имя:</strong> {{ reservation.guest_name }}</li>
-            <li><strong>Телефон:</strong> {{ reservation.guest_phone|default:"Не указан" }}</li>
-            <li><strong>Длительность:</strong> {{ reservation.duration }}</li>
-            <li><strong>Источник:</strong> {{ reservation.get_source_display }}</li>
-            <li><strong>Создано:</strong> {{ reservation.created_at|date:"d.m.Y H:i" }}</li>
+          </div>
+
+          <div class="reservation-info">
+            <div class="reservation-info-item">
+              <strong>Столик:</strong>
+              {{ reservation.table.display_name|default:"№" }}
+            </div>
+            <div class="reservation-info-item">
+              <strong>Гостей:</strong> {{ reservation.guests_count }}
+            </div>
+
+            <div class="reservation-info-item">
+              <strong>Имя:</strong> {{ reservation.guest_name }}
+            </div>
+            <div class="reservation-info-item">
+              <strong>Телефон:</strong> {{ reservation.guest_phone|default:"Не указан" }}
+            </div>
+
+            <div class="reservation-info-item">
+              <strong>Длительность:</strong> {{ reservation.duration }}
+            </div>
+            <div class="reservation-info-item">
+              <strong>Источник:</strong> {{ reservation.get_source_display }}
+            </div>
+
+            <div class="reservation-info-item">
+              <strong>Создано:</strong> {{ reservation.created_at|date:"d.m.Y H:i" }}
+            </div>
+
             {% if reservation.upsell_amount %}
-              <li><strong>Доп.опция:</strong> {{ reservation.upsell_option }} ({{ reservation.upsell_amount }} ₽)</li>
+              <div class="reservation-info-item">
+                <strong>Доп.опция:</strong> {{ reservation.upsell_option }} ({{ reservation.upsell_amount }} ₽)
+              </div>
             {% endif %}
+
             {% if reservation.extended_by_admin %}
-              <li><strong>Продлена вручную:</strong> ✅</li>
+              <div class="reservation-info-item">
+                <strong>Продлена вручную:</strong> ✅
+              </div>
             {% endif %}
-          </ul>
+          </div>
 
           <div class="reservation-actions">
-            <a href="{% url 'booking:update_reservation' reservation.pk %}" class="btn btn-edit">Изменить</a>
+            <a href="{% url 'booking:update_reservation' reservation.pk %}" class="btn-orange">Изменить</a>
 
-            <form action="{% url 'booking:delete_reservation' reservation.pk %}" method="post" onsubmit="return confirm('Вы уверены, что хотите удалить эту бронь?');" style="display:inline;">
+            <form action="{% url 'booking:delete_reservation' reservation.pk %}" method="post" onsubmit="return confirm('Вы уверены, что хотите удалить эту бронь?');">
               {% csrf_token %}
-              <button type="submit" class="btn btn-delete">Удалить</button>
+              <button type="submit" class="btn-red">Удалить</button>
             </form>
           </div>
         </div>
       {% endfor %}
-    </div>
-  {% else %}
-    <p class="text-center text-muted">У вас пока нет бронирований.</p>
-  {% endif %}
+    {% else %}
+      <p class="empty-message">У вас пока нет бронирований.</p>
+    {% endif %}
+  </div>
 </div>
 {% endblock %}
